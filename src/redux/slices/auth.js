@@ -1,14 +1,21 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../axios";
 
-export const fetchUserData = createAsyncThunk("auth/fetchUserData", async (params) => {
-  const { data } = await axios.post("/login", params);
-  return data;
-});
+export const fetchUserData = createAsyncThunk(
+  "auth/fetchUserData",
+  async (params, { rejectWithValue }) => {
+    try { 
+      const { data } = await axios.post("/login", params); 
+      return data;
+    } catch (error) {
+      return error.response.data
+    }
+  }
+);
 
 const initialState = {
   data: null,
-  status: 'loading'
+  status: "loading",
 };
 
 const authSlice = createSlice({
@@ -23,13 +30,13 @@ const authSlice = createSlice({
       state.status = "loaded";
       state.data = action.payload;
     },
-    [fetchUserData.rejected]: (state) => {
+    [fetchUserData.rejected]: (state, action) => {
       state.status = "error";
-      state.items = null;
+      state.data = action.payload;
     },
   },
 });
 
-export const selectIsAuth = state => Boolean(state.auth.data)
+export const selectIsAuth = (state) => Boolean(state.auth.data);
 
 export const authReducer = authSlice.reducer;

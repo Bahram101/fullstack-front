@@ -6,13 +6,14 @@ import Button from "@mui/material/Button";
 import { useForm } from "react-hook-form";
 import styles from "./Login.module.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { fetchUserData, selectIsAuth } from "../../redux/slices/auth";
 
 export const Login = () => {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuth);
-  console.log("isAuth", isAuth);
+  const res = useSelector(state => state);
+
+  console.log('res',res);
 
   const {
     register,
@@ -31,6 +32,8 @@ export const Login = () => {
     dispatch(fetchUserData(values));
   };
 
+  setError()
+
   return (
     <Paper classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
@@ -43,7 +46,8 @@ export const Login = () => {
           error={Boolean(errors.email?.message)}
           helperText={errors.email?.message}
           fullWidth
-          {...register("email", { required: "Укажите почту" })}
+          // {...register("email", { required: "Укажите почту" })}
+          {...setError('email', { type: 'custom', message: 'custom message' })}
         />
         <TextField
           className={styles.field}
@@ -51,7 +55,7 @@ export const Login = () => {
           fullWidth
           error={Boolean(errors.password?.message)}
           helperText={errors.password?.message}
-          {...register("password", { required: "Укажите пароль" })}
+          {...register("password", { required: "Укажите почту" })}
         />
         <Button type="submit" size="large" variant="contained" fullWidth>
           Войти
