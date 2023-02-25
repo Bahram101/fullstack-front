@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Paper from "@mui/material/Paper";
@@ -10,10 +10,9 @@ import { fetchUserData, selectIsAuth } from "../../redux/slices/auth";
 
 export const Login = () => {
   const dispatch = useDispatch();
-  const isAuth = useSelector(selectIsAuth);
-  const res = useSelector(state => state);
-
-  console.log('res',res);
+  const isAuth = useSelector((state) => state.auth.data);
+  const res = useSelector((state) => state);
+  const [err, setErr] = useState([]);
 
   const {
     register,
@@ -28,12 +27,23 @@ export const Login = () => {
     mode: "onChange",
   });
 
+  const { ref: inputRef, ...inputProps } = register("email", {
+    required: isAuth && isAuth[0].msg,
+  });
+
+  console.log("errors", errors);
+
+  // useEffect(()=>{
+  //   console.log('use');
+  //   setErr(isAuth);
+  // }, [isAuth])
+  // console.log("err", err && err[0]?.msg);
+  console.log("isAuth", isAuth);
+  // console.log("errors", errors);
+
   const onSubmit = (values) => {
     dispatch(fetchUserData(values));
   };
-
-  setError()
-
   return (
     <Paper classes={{ root: styles.root }}>
       <Typography classes={{ root: styles.title }} variant="h5">
@@ -43,11 +53,12 @@ export const Login = () => {
         <TextField
           className={styles.field}
           label="E-Mail"
+          fullWidth
           error={Boolean(errors.email?.message)}
           helperText={errors.email?.message}
-          fullWidth
-          // {...register("email", { required: "Укажите почту" })}
-          {...setError('email', { type: 'custom', message: 'custom message' })}
+          // {...register("email", {
+          //   required: "error text",
+          // })}
         />
         <TextField
           className={styles.field}
@@ -55,7 +66,9 @@ export const Login = () => {
           fullWidth
           error={Boolean(errors.password?.message)}
           helperText={errors.password?.message}
-          {...register("password", { required: "Укажите почту" })}
+          {...register("password", {
+            required: err?.length > 0 && err[1].msg,
+          })}
         />
         <Button type="submit" size="large" variant="contained" fullWidth>
           Войти
