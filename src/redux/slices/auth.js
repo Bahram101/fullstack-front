@@ -5,10 +5,10 @@ export const fetchUserData = createAsyncThunk(
   "auth/fetchUserData",
   async (params) => {
     try {
-      const { data } = await axios.post("/login", params);
+      const {data} = await axios.post("/login", params); 
       return data;
-    } catch (error) {
-      return error.response.data;
+    } catch (err) {  
+      return err.response.data;
     }
   }
 );
@@ -23,19 +23,19 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     logout: (state) => {
-      state.data = null;
+      state.auth.data = null;
     },
   },
   extraReducers: {
-    [fetchUserData.pending]: (state) => {
+    [fetchUserData.pending]: (state, action) => { 
       state.status = "loading";
       state.data = null;
     },
-    [fetchUserData.fulfilled]: (state, action) => {
+    [fetchUserData.fulfilled]: (state, action) => {  
       state.status = "loaded";
       state.data = action.payload;
     },
-    [fetchUserData.rejected]: (state, action) => {
+    [fetchUserData.rejected]: (state, action) => { 
       state.status = "error";
       state.data = action.payload;
     },

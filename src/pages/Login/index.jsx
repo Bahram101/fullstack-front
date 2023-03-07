@@ -10,9 +10,8 @@ import { fetchUserData, selectIsAuth } from "../../redux/slices/auth";
 
 export const Login = () => {
   const dispatch = useDispatch();
-  const isAuth = useSelector((state) => state.auth.data);
-  const res = useSelector((state) => state);
-  const [err, setErr] = useState([]);
+  // const isAuth = useSelector((state) => state.auth.data);
+  const res = useSelector((state) => state.auth.data); 
 
   const {
     register,
@@ -27,19 +26,8 @@ export const Login = () => {
     mode: "onChange",
   });
 
-  const { ref: inputRef, ...inputProps } = register("email", {
-    required: isAuth && isAuth[0].msg,
-  });
-
-  console.log("errors", errors);
-
-  // useEffect(()=>{
-  //   console.log('use');
-  //   setErr(isAuth);
-  // }, [isAuth])
-  // console.log("err", err && err[0]?.msg);
-  console.log("isAuth", isAuth);
-  // console.log("errors", errors);
+  // console.log("isAuth", isAuth);
+  console.log("res", res);
 
   const onSubmit = (values) => {
     dispatch(fetchUserData(values));
@@ -49,27 +37,34 @@ export const Login = () => {
       <Typography classes={{ root: styles.title }} variant="h5">
         Вход в аккаунт
       </Typography>
+      {res?.hasOwnProperty('mes') ? res.mes :  res?.map((item) => (
+        <div style={{marginBottom: '10px'}}>
+          <div style={{ fontSize: "12px", color: "red" }}>- {item.msg}</div>
+        </div>
+      ))}
+
       <form onSubmit={handleSubmit(onSubmit)}>
         <TextField
           className={styles.field}
           label="E-Mail"
           fullWidth
           error={Boolean(errors.email?.message)}
-          helperText={errors.email?.message}
-          // {...register("email", {
-          //   required: "error text",
-          // })}
+          helperText={errors?.email?.message}
+          {...register("email", {
+            required: "Заполните поля",
+          })}
         />
         <TextField
           className={styles.field}
           label="Пароль"
           fullWidth
           error={Boolean(errors.password?.message)}
-          helperText={errors.password?.message}
+          helperText={errors?.password?.message}
           {...register("password", {
-            required: err?.length > 0 && err[1].msg,
+            required: "Заполните поля",
           })}
         />
+
         <Button type="submit" size="large" variant="contained" fullWidth>
           Войти
         </Button>
