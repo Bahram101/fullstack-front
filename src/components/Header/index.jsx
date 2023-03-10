@@ -11,9 +11,12 @@ export const Header = () => {
   const dispatch = useDispatch();
   const isAuth = useSelector(selectIsAuth);
 
+  console.log('isAuth',isAuth)
+
   const onClickLogout = () => {
     if (window.confirm("Вы точно хотите выйти?")) {
       dispatch(logout());
+      window.localStorage.removeItem('tokenFull')
     }
   };
 

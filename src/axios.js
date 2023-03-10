@@ -5,7 +5,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  config.headers.Authorization = window.localStorage.getItem("mern-token");
+  config.headers.Authorization = window.localStorage.getItem("tokenFull");
   return config;
 });
 
